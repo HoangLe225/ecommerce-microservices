@@ -1,0 +1,25 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/orders_db
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      productService:
+        registerHealthIndicator: true
+        slidingWindowSize: 10         # theo dõi 10 request gần nhất
+        minimumNumberOfCalls: 5       # chỉ tính khi có ít nhất 5 request
+        failureRateThreshold: 50      # nếu 50% lỗi → ngắt mạch
+        waitDurationInOpenState: 10s  # sau 10s thử mở lại
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        ignore-exceptions:
+          - com.spring.project.microservices.orderservice.exception.ResourceNotFoundException

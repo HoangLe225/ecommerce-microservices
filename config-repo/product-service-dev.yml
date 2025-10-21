@@ -1,0 +1,5 @@
+eureka:
+  client:
+    enabled: false
+custom:
+  message: "Hello from product-service-dev!"
