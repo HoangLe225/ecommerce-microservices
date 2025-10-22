@@ -1,85 +1,83 @@
 # 🛍️ E-commerce Microservices Project
 
-Dự án này là một hệ thống **thương mại điện tử** đơn giản, được xây dựng theo kiến trúc **Microservices** để xử lý quy trình **đặt hàng sản phẩm** cơ bản.
+This project is a simple **e-commerce system** built using the **Microservices** architecture to handle a basic **product ordering** process.
 
 ---
 
-## 💡 Tổng quan Kiến trúc
+## 💡 Architecture Overview
 
-Hệ thống được chia thành các dịch vụ độc lập, giao tiếp với nhau qua **REST API**. Các dịch vụ được quản lý và cấu hình tập trung để đảm bảo tính linh hoạt và khả năng mở rộng.
-
-
+The system is divided into independent services that communicate with each other via **REST APIs**. All services are centrally managed and configured to ensure flexibility and scalability.
 
 ---
 
-## 🛠️ Công nghệ & Thành phần Chính
+## 🛠️ Technologies & Key Components
 
-Dự án sử dụng bộ công nghệ chủ yếu là **Spring Cloud** kết hợp với **Java 17** để xây dựng các Microservices.
+The project uses the **Spring Cloud** stack along with **Java 17** to build the microservices.
 
-| Thành phần | Công nghệ/Mục đích | Chi tiết |
+| Component | Technology / Purpose | Details |
 | :--- | :--- | :--- |
-| **Backend Framework** | **Spring Boot** (Java 17) | Xây dựng các Microservices độc lập. |
-| **Database** | **MySQL** | Cơ sở dữ liệu quan hệ cho các dịch vụ. |
-| **Service Discovery** | **Eureka Server** | Cho phép các dịch vụ tự đăng ký và tìm kiếm lẫn nhau. |
-| **Configuration** | **Spring Cloud Config Server** | Quản lý cấu hình tập trung cho tất cả các dịch vụ. |
-| **API Gateway** | **Spring Cloud Gateway** | Cổng vào duy nhất cho tất cả các request từ client, xử lý định tuyến và bảo mật. |
-| **Giao tiếp Inter-Service** | **Feign Client** | Giao tiếp đồng bộ giữa các Microservices bằng cách sử dụng RESTful Web Service. |
-| **Security** | **JWT** (JSON Web Token) | Xác thực và ủy quyền người dùng. |
-| **Giao tiếp API** | **REST API** | Phương thức giao tiếp chính giữa các dịch vụ và giữa Gateway với Client. |
-| **Chịu lỗi (Fault Tolerance)** | **Resilience4j** (Circuit Breaker) | Triển khai cơ chế **Circuit Breaker** để tăng tính ổn định và khả năng chịu lỗi của hệ thống. |
+| **Backend Framework** | **Spring Boot** (Java 17) | Builds independent microservices. |
+| **Database** | **MySQL** | Relational database for the services. |
+| **Service Discovery** | **Eureka Server** | Allows services to register and discover each other. |
+| **Configuration** | **Spring Cloud Config Server** | Centralized configuration management for all services. |
+| **API Gateway** | **Spring Cloud Gateway** | Single entry point for all client requests; handles routing and security. |
+| **Giao tiếp Inter-Service** | **Feign Client** | Synchronous communication between services using RESTful APIs. |
+| **Security** | **JWT** (JSON Web Token) | User authentication and authorization. |
+| **API Communication** | **REST API** | Main communication method between services and from Gateway to Client. |
+| **Fault Tolerance** | **Resilience4j** (Circuit Breaker) | Implements **Circuit Breaker** to improve system stability and resilience. |
 
 ---
 
-## ✅ Các Chức năng Cốt lõi
+## ✅ Core Features
 
-| Service | Endpoint | Chức năng chi tiết |
+| Service | Endpoint(s) | Description |
 | :--- | :--- | :--- |
-| **User Service** | `/api/users/register`, `/api/users/login` | Đăng ký, Đăng nhập, **Tạo/Kiểm tra JWT**. |
-| **Product Service** | `/api/products`, `/api/products/{id}` | **CRUD** sản phẩm |
-| **Order Service** | `/api/orders` (POST), `/api/orders/{id}`, `/api/orders/{id}/order_items` | **Tạo đơn hàng**, **Lấy đơn hàng**. Liên kết người dùng (User Service) và tồn kho (Product Service). |
+| **User Service** | `/api/users/register`, `/api/users/login` | User registration and login, **JWT creation/validation**. |
+| **Product Service** | `/api/products`, `/api/products/{id}` | **CRUD** operations for products. |
+| **Order Service** | `/api/orders` (POST), `/api/orders/{id}`, `/api/orders/{id}/order_items` | **Create and retrieve orders**; connects with User and Product services. |
 
 ---
 
-## 🧩 Các Microservices
+## 🧩 Microservices Overview
 
-Dự án bao gồm 3 Microservices cốt lõi để thực hiện quy trình đặt hàng:
+The project consists of three core microservices for the order processing flow:
 
 1.  **User Service**
-    * Quản lý thông tin người dùng (Đăng ký, Đăng nhập).
-    * Cung cấp API liên quan đến xác thực (**JWT** generation/validation).
+    * Manages user information (registration, login).
+    * Provides authentication-related APIs (**JWT** generation/validation).
 
 2.  **Product Service**
-    * Quản lý thông tin sản phẩm (Tạo, Xem, Cập nhật, Xóa).
-    * Quản lý số lượng tồn kho của sản phẩm.
+    * Manages product data (Create, Read, Update, Delete).
+    * Manages product inventory (stock quantity).
 
 3.  **Order Service**
-    * Xử lý logic đặt hàng (Tạo đơn hàng mới).
-    * Sử dụng **Feign Client** để gọi đến **Product Service** (kiểm tra tồn kho và giảm số lượng) và **User Service** (lấy thông tin người đặt).
-    * Áp dụng **Circuit Breaker** (**Resilience4j**) khi gọi các dịch vụ khác.
+    * Handles order logic (creating new orders).
+    * Uses **Feign Client** to call **Product Service** (check and deduct stock) and **User Service** (retrieve user details).
+    * Applies **Circuit Breaker** (**Resilience4j**) when calling other services.
 
 ---
 
-## 🚀 Cách Thức Hoạt động (Quy trình Đặt hàng)
+## 🚀 Workflow (Ordering Process)
 
-1.  **Client** gửi yêu cầu Đặt hàng đến **API Gateway**.
-2.  **API Gateway** (sau khi xác thực **JWT**) định tuyến yêu cầu đến **Order Service**.
-3.  **Order Service** sử dụng **Feign Client** để:
-    * Gọi **User Service** để lấy chi tiết người dùng.
-    * Gọi **Product Service** để kiểm tra và trừ tồn kho.
-    * Nếu **Product Service** không khả dụng, cơ chế **Circuit Breaker** của **Resilience4j** sẽ kích hoạt, có thể trả về một phản hồi dự phòng (**fallback**).
-4.  Sau khi xác nhận, **Order Service** lưu thông tin đơn hàng vào DB và trả về kết quả cho Client qua **API Gateway**.
+1.  The **client** sends an order request to the **API Gateway**.
+2.  The **API Gateway**, after validating the **JWT**, routes the request to the **Order Service**.
+3.  **Order Service** uses **Feign Client** to:
+    * Calls the **User Service** to retrieve user details.
+    * Calls the **Product Service** to check and deduct stock.
+    * If the **Product Service** is unavailable, **Resilience4j's Circuit Breaker** activates and returns a **fallback** response.
+4.  After confirmation, the **Order Service** saves the order to the database and returns the result to the client via the **API Gateway**.
 
 ---
 
-## ⚙️ Thiết lập và Chạy Dự án
+## ⚙️ Project Setup & Run Instructions
 
-### Yêu cầu Hệ thống
+### System Requirements
 
-* **Java 17** trở lên.
+* **Java 17** or higher.
 * **Maven** 3.x.
 * **MySQL** Database.
 
-### Cấu trúc Thư mục
+### Folder Structure
 ```
 ecommerce-microservices/ 
 ├── config-server/ 
@@ -90,25 +88,25 @@ ecommerce-microservices/
 ├── order-service/ 
 └── README.md
 ```
-### Cấu hình Database
-Tạo các cơ sở dữ liệu (schema) cần thiết cho mỗi service: `user_db`, `product_db`, `order_db`.
+### Database Configuration
+Create the necessary schemas for each service:: `users_db`, `products_db`, `orders_db`.
 
-### Các Bước Triển khai
+### Deployment Steps
 
-1.  **Khởi động Config Server & Eureka Server:**
-    * Clone các repository của `config-server` và `eureka-server`.
-    * Chạy cả hai server để đảm bảo các dịch vụ khác có thể tìm thấy cấu hình và đăng ký.
-2.  **Khởi tạo Database:**
-    * Tạo các schema MySQL cần thiết cho User, Product, và Order services.
-    * Cấu hình thông tin kết nối DB trong `config-server` hoặc trong file cấu hình cục bộ (`application.yml`).
-3.  **Khởi chạy các Microservices:**
-    * Lần lượt khởi động `user-service`, `product-service`, và `order-service`.
-4.  **Khởi chạy API Gateway:**
-    * Khởi động `api-gateway` để bắt đầu nhận request từ Client.
+1.  **Start Config Server & Eureka Server:**
+    * Clone the `config-server` and `eureka-server` repositories.
+    * Run both servers so that other services can locate configs and register themselves.
+2.  **Initialize Databases:**
+    * Create required MySQL schemas for the User, Product, and Order services.
+    * Configure DB connection settings in `config-server` or local `application.yml` files.
+3.  **Start Microservices:**
+    * Start `user-service`, `product-service`, and `order-service`.
+4.  **Start API Gateway:**
+    * Launch the `api-gateway` to start receiving client requests.
 
-### Cổng Mặc định
+### Default Ports
 
-| Dịch vụ | Cổng |
+| Service | Port |
 | :--- | :--- |
 | **Eureka Server** | `8761` |
 | **Config Server** | `8888` |
@@ -119,17 +117,17 @@ Tạo các cơ sở dữ liệu (schema) cần thiết cho mỗi service: `user_
 
 ---
 
-## 📌 Ghi chú Phát triển
-* Dự án sử dụng phiên bản Spring Boot 3+ (tương thích với Java 17) và Spring Cloud 2022+.
-* Để kiểm tra hệ thống dễ dàng, nên sử dụng Postman Collection (nếu có) để gọi các API qua API Gateway (http://localhost:8080/).
+## 📌 Development Notes
+* The project uses Spring Boot 3+ (compatible with Java 17) and Spring Cloud 2022+.
+* To test the system easily, consider using a Postman collection (if available) to call the APIs via the API Gateway: http://localhost:8080/.
 ---
 
-## 🤝 Đóng góp
+## 🤝 Contributions
 
-Mọi đóng góp (pull requests) đều được hoan nghênh. Vui lòng tạo một issue trước nếu bạn muốn đề xuất thay đổi lớn.
+All contributions (pull requests) are welcome. Please create an issue first if you'd like to suggest a major change.
 
 ---
 
-## 📝 Giấy phép
+## 📝 License
 
 N/A.
